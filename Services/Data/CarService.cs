@@ -98,6 +98,24 @@ namespace Services.Data
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Car>> GetAllByMake(int makeId, int? modelId)
+        {
+            if(modelId != null)
+            {
+                return await _context.Cars
+                .Include(c => c.Model)
+                .Include(c => c.Model.Make)
+                .Include(c => c.Owner).Where(c => c.Model.Make.Id == makeId && c.Model.Id == modelId)
+                .ToListAsync();
+            }
+
+            return await _context.Cars
+                .Include(c => c.Model)
+                .Include(c => c.Model.Make)
+                .Include(c => c.Owner).Where(c => c.Model.Make.Id == makeId)
+                .ToListAsync();
+        }
+
         public bool IsLicensePlateInUse(string licensePlate)
         {
             if(_context.Cars.Any(x => x.LicensePlate == licensePlate))

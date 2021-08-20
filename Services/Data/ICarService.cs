@@ -8,6 +8,7 @@ namespace Services.Data
     {
         public Task Add(Car car);
         public Task<Car> Get(int id);
+        public Task<IEnumerable<Car>> GetAllByMake(int makeId, int? modelId);
         public bool IsLicensePlateInUse(string licensePlate);
         public Task Update(Car car);
         public Task Remove(int id);

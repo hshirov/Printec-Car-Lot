@@ -1,0 +1,23 @@
+﻿@model Web.Models.CarIndexViewModel
+@{
+    ViewData["Title"] = @Model.Make + " " + @Model.Model;
+}
+<h3>@ViewData["Title"]</h3>
+<h6 class="text-muted">Owned by: @Model.OwnerFirstName @Model.OwnerLastName</h6>
+<h6 class="text-muted">License Plate: <b>@Model.LicensePlate</b></h6>
+<table class="table mt-3">
+    <tbody>
+        <tr>
+            <td scope="row">Power output</td>
+            <th scope="row">@Model.HorsePower HP</th>
+        </tr>
+        <tr>
+            <td scope="row">Engine displacement</td>
+            <th scope="row">@Model.EngineCapacityInCC cm³</th>
+        </tr>
+        <tr>
+            <td scope="row">Color</td>
+            <th scope="row">@Model.Color</th>
+        </tr>
+    </tbody>
+</table>

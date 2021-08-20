@@ -1,6 +1,6 @@
 ﻿@model Web.Models.FindCarViewModel
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
 <form asp-action="Index" enctype="multipart/form-data">
@@ -14,7 +14,7 @@
                 @Html.DropDownListFor(model => model.ModelId, new SelectList(Model.AllModels.Select(m => m), "Id", "Name"), "Select Model", new { @class = "form-control mt-3" })
             </div>
             <div class="col-9">
-                <input type="submit" asp-action="Search" value="Search" class="btn btn-primary mt-3 col-md-3" />
+                <input type="submit" asp-action="Search" asp-controller="Cars" asp-route-makeId="@Model.MakeId" asp-route-modelId="@Model.ModelId" value="Search" class="btn btn-primary mt-3 col-md-3" />
             </div>
         </div>
     </div>

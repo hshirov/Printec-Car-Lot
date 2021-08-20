@@ -1,0 +1,11 @@
+﻿@model Web.Models.CarsViewModel
+@{
+    ViewData["Title"] = "All Cars";
+}
+@foreach (var car in Model.Cars)
+{
+    <h3>@car.Make</h3>
+    <h5 class="text-muted">@car.Model</h5>
+    <a asp-action="Details" asp-route-id="@car.Id">View details</a>
+    <hr />
+}

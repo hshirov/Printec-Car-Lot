@@ -7,12 +7,12 @@ using Web.Models;
 
 namespace Web.Controllers
 {
-    public class Add : Controller
+    public class AddController : Controller
     {
         private readonly ICarService _carService;
         private readonly IMapper _mapper;
 
-        public Add(ICarService carService, IMapper mapper)
+        public AddController(ICarService carService, IMapper mapper)
         {
             _carService = carService;
             _mapper = mapper;

@@ -95,14 +95,14 @@ namespace Web.Controllers
         [HttpGet("makes/get/{id}")]
         public async Task<ActionResult<Make>> GetMake(int id)
         {
-            var makes = await _makeAndModelService.GetMake(id);
+            var make = await _makeAndModelService.GetMake(id);
 
-            if (makes == null)
+            if (make == null)
             {
                 return NotFound();
             }
 
-            return makes;
+            return make;
         }
     }
 }
