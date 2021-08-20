@@ -1,16 +1,17 @@
 ﻿using Data;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Services.Data
 {
-    public class ModelService : IModelService
+    public class MakeAndModelService : IMakeAndModelService
     {
         private readonly ApplicationDbContext _context;
 
-        public ModelService(ApplicationDbContext context)
+        public MakeAndModelService(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -21,10 +22,25 @@ namespace Services.Data
             await _context.SaveChangesAsync();
         }
 
-        public async Task AddModel(Model model)
+        public async Task<IEnumerable<Make>> GetAllMakes()
         {
-            await _context.AddAsync(model);
-            await _context.SaveChangesAsync();
+            return await _context.Makes
+                 .Include(m => m.Models)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Model>> GetAllModelsFromMake(int makeId)
+        {
+            return await _context.Models
+                .Where(m => m.Make.Id == makeId)
+                .ToListAsync();
+        }
+
+        public async Task<Make> GetMake(int id)
+        {
+            return await _context.Makes
+                .Include(m => m.Models)
+                .FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public bool TryGetMake(string name, out Make make)

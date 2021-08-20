@@ -1,5 +1,6 @@
 ﻿using Data;
 using Data.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,9 @@ namespace Services.Data
     {
         private readonly ApplicationDbContext _context;
         private readonly IOwnerService _ownerService;
-        private readonly IModelService _modelService;
+        private readonly IMakeAndModelService _modelService;
 
-        public CarService(ApplicationDbContext context, IOwnerService ownerService, IModelService modelService)
+        public CarService(ApplicationDbContext context, IOwnerService ownerService, IMakeAndModelService modelService)
         {
             _context = context;
             _ownerService = ownerService;
@@ -80,9 +81,21 @@ namespace Services.Data
             await _context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<Car>> GetAll()
+        public async Task<Car> Get(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Cars
+                .Include(c => c.Model)
+                .Include(c => c.Model.Make)
+                .Include(c => c.Owner).FirstOrDefaultAsync(c => c.Id == id);
+        }
+
+        public async Task<IEnumerable<Car>> GetAll()
+        {
+            return await _context.Cars
+                .Include(c => c.Model)
+                .Include(c => c.Model.Make)
+                .Include(c => c.Owner)
+                .ToListAsync();
         }
 
         public bool IsLicensePlateInUse(string licensePlate)

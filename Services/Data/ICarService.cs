@@ -7,6 +7,7 @@ namespace Services.Data
     public interface ICarService
     {
         public Task Add(Car car);
+        public Task<Car> Get(int id);
         public bool IsLicensePlateInUse(string licensePlate);
         public Task Update(Car car);
         public Task Remove(int id);

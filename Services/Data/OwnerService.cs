@@ -1,7 +1,7 @@
 ﻿using Data;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,6 +20,20 @@ namespace Services.Data
         {
             await _context.AddAsync(owner);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<Owner> Get(int id)
+        {
+            return await _context.Owners
+                .Include(o => o.Cars)
+                .FirstOrDefaultAsync(c => c.Id == id);
+        }
+
+        public async Task<IEnumerable<Owner>> GetAll()
+        {
+            return await _context.Owners
+               .Include(o => o.Cars)
+               .ToListAsync();
         }
 
         public bool TryGet(string firstName, string lastName, out Owner owner)
