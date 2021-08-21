@@ -12,5 +12,7 @@ namespace Services.Data
         public Task<IEnumerable<Make>> GetAllMakes();
         public Task<IEnumerable<Model>> GetAllModelsFromMake(int makeId);
         public Task<Make> GetMake(int id);
+        public Task RemoveModel(int id);
+        public Task RemoveMake(int id);
     }
 }

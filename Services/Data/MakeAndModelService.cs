@@ -43,6 +43,22 @@ namespace Services.Data
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
 
+        public async Task RemoveModel(int id)
+        {
+            var model = await GetModel(id);
+            _context.Remove(model);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveMake(int id)
+        {
+            var make = await GetMake(id);
+            _context.Remove(make);
+
+            await _context.SaveChangesAsync();
+        }
+
         public bool TryGetMake(string name, out Make make)
         {
             make = _context.Makes
@@ -71,6 +87,11 @@ namespace Services.Data
             }
 
             return true;
+        }
+
+        private async Task<Model> GetModel(int id)
+        {
+            return await _context.Models.FirstOrDefaultAsync(m => m.Id == id);
         }
     }
 }

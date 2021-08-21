@@ -1,0 +1,65 @@
+﻿@model Web.Models.AddCarViewModel
+
+@{
+    ViewData["Title"] = "Add Car";
+}
+<form asp-action="Add" enctype="multipart/form-data">
+    <div class="row justify-content-md-center">
+        <div class="col-md-5">
+            <h5>Owner Info</h5>
+            <div class="form-group">
+                <label asp-for="OwnerFirstName"></label>
+                <input asp-for="OwnerFirstName" class="form-control" />
+                <span asp-validation-for="OwnerFirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OwnerLastName"></label>
+                <input asp-for="OwnerLastName" class="form-control" />
+                <span asp-validation-for="OwnerLastName" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <h5>Car Info</h5>
+            <div class="form-group">
+                <label asp-for="Make"></label>
+                <input asp-for="Make" class="form-control" />
+                <span asp-validation-for="Make" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Model"></label>
+                <input asp-for="Model" class="form-control" />
+                <span asp-validation-for="Model" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EngineCapacityInCC"></label>
+                <input asp-for="EngineCapacityInCC" type="number" min="0" class="form-control" />
+                <span asp-validation-for="EngineCapacityInCC" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HorsePower"></label>
+                <input asp-for="HorsePower" type="number" min="0" class="form-control" />
+                <span asp-validation-for="HorsePower" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Color"></label>
+                <select asp-for="Color" asp-items="Html.GetEnumSelectList(typeof (Data.Enums.Color))" class="form-control"></select>
+                <span asp-validation-for="Color" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LicensePlate"></label>
+                <input asp-for="LicensePlate" class="form-control" />
+                <span asp-validation-for="LicensePlate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Add" class="btn btn-primary mt-3 col-md-12" />
+            </div>
+            @if (ViewBag.SuccessContact != null && ViewBag.SuccessContact)
+            {
+                <div class="alert alert-success col-md-12" role="alert">
+                    The car has been added.
+                </div>
+                <a asp-action="Index">View available cars</a>
+            }
+        </div>
+    </div>
+</form>

@@ -1,7 +1,6 @@
 ﻿using Data;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -86,7 +85,7 @@ namespace Services.Data
             return await _context.Cars
                 .Include(c => c.Model)
                 .Include(c => c.Model.Make)
-                .Include(c => c.Owner).FirstOrDefaultAsync(c => c.Id == id);
+                .Include(c => c.Owner).FirstOrDefaultAsync(c => c.Id == id && !c.IsArchived);
         }
 
         public async Task<IEnumerable<Car>> GetAll()
@@ -95,6 +94,7 @@ namespace Services.Data
                 .Include(c => c.Model)
                 .Include(c => c.Model.Make)
                 .Include(c => c.Owner)
+                .Where(c => !c.IsArchived)
                 .ToListAsync();
         }
 
@@ -105,20 +105,20 @@ namespace Services.Data
                 return await _context.Cars
                 .Include(c => c.Model)
                 .Include(c => c.Model.Make)
-                .Include(c => c.Owner).Where(c => c.Model.Make.Id == makeId && c.Model.Id == modelId)
+                .Include(c => c.Owner).Where(c => c.Model.Make.Id == makeId && c.Model.Id == modelId && !c.IsArchived)
                 .ToListAsync();
             }
 
             return await _context.Cars
                 .Include(c => c.Model)
                 .Include(c => c.Model.Make)
-                .Include(c => c.Owner).Where(c => c.Model.Make.Id == makeId)
+                .Include(c => c.Owner).Where(c => c.Model.Make.Id == makeId && !c.IsArchived)
                 .ToListAsync();
         }
 
         public bool IsLicensePlateInUse(string licensePlate)
         {
-            if(_context.Cars.Any(x => x.LicensePlate == licensePlate))
+            if(_context.Cars.Where(c => !c.IsArchived).Any(x => x.LicensePlate == licensePlate))
             {
                 return true;
             }
@@ -126,14 +126,59 @@ namespace Services.Data
             return false;
         }
 
-        public Task Remove(int id)
+        public async Task Remove(int id)
         {
-            throw new NotImplementedException();
+            var car = await Get(id);
+
+            _context.Update(car);
+            car.IsArchived = true;
+
+            var allCars = await GetAll();
+            int carsWithThisModel = allCars.Where(c => c.Model == car.Model).Count();
+            int carsWithThisMake = allCars.Where(c => c.Model.Make == car.Model.Make).Count();
+
+            if(carsWithThisMake == 1)
+            {
+                _context.Remove(car);
+
+                var allArchivedWithMake = await GetAllArchivedByMake(car.Model.Make.Id);
+                foreach(var carToDelete in allArchivedWithMake)
+                {
+                    _context.Update(carToDelete);
+                    _context.Remove(carToDelete);
+                }
+
+                await _context.SaveChangesAsync();
+
+                await _modelService.RemoveModel(car.Model.Id);
+                await _modelService.RemoveMake(car.Model.Make.Id);
+            }
+            else if(carsWithThisModel == 1)
+            {
+                _context.Remove(car);
+
+                await _context.SaveChangesAsync();
+                await _modelService.RemoveModel(car.Model.Id);
+            }
+
+            await _context.SaveChangesAsync();
         }
 
-        public Task Update(Car car)
+        private async Task<IEnumerable<Car>> GetAllArchivedByMake(int makeId)
         {
-            throw new NotImplementedException();
+            return await _context.Cars
+                .Include(c => c.Model)
+                .Include(c => c.Model.Make)
+                .Include(c => c.Owner).Where(c => c.Model.Make.Id == makeId && c.IsArchived)
+                .ToListAsync();
+        }
+
+        public async Task Update(Car car)
+        {
+            var entityToUpdate = await Get(car.Id);
+            _context.Entry(entityToUpdate).CurrentValues.SetValues(car);
+
+            await _context.SaveChangesAsync();
         }
     }
 }

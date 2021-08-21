@@ -11,5 +11,6 @@ namespace Data.Models
         public string LicensePlate { get; set; }
         public int EngineCapacityInCC { get; set; }
         public int HorsePower { get; set; }
+        public bool IsArchived { get; set; }
     }
 }

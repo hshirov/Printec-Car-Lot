@@ -3,8 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Web.Models
 {
-    public class AddCarViewModel
+    public class EditCarViewModel
     {
+        public int Id { get; set; }
+        public string Model { get; set; }
+        public string Make { get; set; }
         [Display(Name = "First Name")]
         [RegularExpression("[a-zA-Z]+", ErrorMessage = "Name must contain letters only.")]
         [MinLength(2, ErrorMessage = "The minimum length is 2")]
@@ -15,13 +18,6 @@ namespace Web.Models
         [MinLength(2, ErrorMessage = "The minimum length is 2")]
         [Required]
         public string OwnerLastName { get; set; }
-        [Required]
-        [StringLength(50)]
-        [MinLength(2, ErrorMessage = "The minimum length is 2")]
-        public string Make { get; set; }
-        [Required]
-        [StringLength(50)]
-        public string Model { get; set; }
         [Required]
         public Color Color { get; set; }
         [Display(Name = "License Plate")]
